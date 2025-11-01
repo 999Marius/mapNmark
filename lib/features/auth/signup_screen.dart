@@ -115,11 +115,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         Navigator.of(context).pushReplacementNamed('/login');
       }
     } catch (e) {
-      // Show error message
       if (mounted) {
+        String errorMessage = e.toString().replaceFirst('Exception: ', '');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: $e'),
+            content: Text(errorMessage),
             backgroundColor: Colors.red,
           ),
         );
