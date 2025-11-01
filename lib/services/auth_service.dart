@@ -10,5 +10,13 @@ class AuthService {
     }
   }
   Stream<AuthState> get authStateChanges => supabase.auth.onAuthStateChange;
+
+  Future<void> signUp(String email, String password) async {
+    try {
+      await supabase.auth.signUp(email: email, password: password);
+    } catch (e) {
+      print('Error during sign-up: $e');
+    }
+  }
 }
 final authServiceProvider = Provider((ref) => AuthService());

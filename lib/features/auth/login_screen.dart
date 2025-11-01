@@ -93,6 +93,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     : const Text('Sign In'),
               ),
             ),
+            const SizedBox(height: 16),
+            // Sign up button
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Don\'t have an account?'),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/signup');
+                  },
+                  child: const Text('Sign Up'),
+                ),
+               ],
+            ),
           ],
         ),
       ),
