@@ -34,6 +34,17 @@ class AuthService {
       rethrow;
     }
   }
+
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await supabase.auth.resetPasswordForEmail(email);
+    } catch (e) {
+      print('Error during password reset: $e');
+      rethrow;
+    }
+  }
 }
+
+
 
 final authServiceProvider = Provider((ref) => AuthService());

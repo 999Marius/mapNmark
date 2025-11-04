@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:map_n_mark/services/auth_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:map_n_mark/features/auth/forgot_password_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -99,6 +100,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 border: OutlineInputBorder(),
               ),
             ),
+            const SizedBox(height: 16),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ForgotPasswordScreen(),
+                    ),
+                  );
+                },
+                child: const Text('Forgot Password?'),
+              ),
+            ),
             const SizedBox(height: 24),
 
             // Sign in button
@@ -116,14 +132,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Don\'t have an account?'),
+                const Text("Don't have an account?"),
                 TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/signup');
                   },
                   child: const Text('Sign Up'),
                 ),
-               ],
+              ],
             ),
           ],
         ),
