@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:map_n_mark/features/auth/login_screen.dart';
 import 'package:map_n_mark/features/auth/signup_screen.dart';
+
+import 'features/auth/auth_gate.dart';
 final supabase = Supabase.instance.client;
 
 Future<void> main() async{
@@ -25,10 +27,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true),
 
-      initialRoute:'/login',
+      home: const AuthGate(),
       routes: {
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignUpScreen(),
+        // Define your home routes here if you want to pushNamed later
       },
     );
   }

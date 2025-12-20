@@ -15,6 +15,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  String _selectedRole = 'student';
+  final _nameController = TextEditingController();
+
+  // State variables
 
   bool _isLoading = false;
   String? _emailError;
@@ -65,10 +69,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
     );
 
+
+
     // Validate all fields
     String? emailError;
     String? passwordError;
     String? confirmPasswordError;
+    String? roleError;
+    if(_selectedRole.isEmpty){
+      roleError = 'This field is mandatory';
+    }
 
     if (email.isEmpty) {
       emailError = 'This field is mandatory';
@@ -102,7 +112,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
     try {
       final authService = ref.read(authServiceProvider);
-      await authService.signUp(email, password);
+      await authService.signUp(email, password, _selectedRole, _nameController.text);
 
       // Show success message
       if (mounted) {
@@ -234,7 +244,33 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               ),
             ),
             const SizedBox(height: 24),
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Full Name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
 
+            // Role Selection
+            DropdownButtonFormField<String>(
+              value: _selectedRole,
+              decoration: const InputDecoration(
+                labelText: 'I am a...',
+                border: OutlineInputBorder(),
+              ),
+              items: const [
+                DropdownMenuItem(value: 'student', child: Text('Student')),
+                DropdownMenuItem(value: 'professor', child: Text('Professor')),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  _selectedRole = value!;
+                });
+              },
+            ),
+            const SizedBox(height: 24),
             // Sign up button
             SizedBox(
               width: double.infinity,
