@@ -77,3 +77,7 @@ class AuthService {
   }
 }
 final authServiceProvider = Provider((ref) => AuthService());
+
+final authStateProvider = StreamProvider<AuthState>((ref) {
+  return ref.read(authServiceProvider).authStateChanges;
+});
