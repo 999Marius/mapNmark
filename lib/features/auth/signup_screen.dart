@@ -153,150 +153,168 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     final primaryColor = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // App title
-            const Text(
-              'mapNmark',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 50),
-
-            // Email input
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                border: const OutlineInputBorder(),
-                errorText: _emailError,
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Password input with strength indicator
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: const OutlineInputBorder(),
-                errorText: _passwordError,
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: passwordStrengthColor == Colors.transparent
-                        ? borderColor
-                        : passwordStrengthColor,
-                    width: 1.0,
-                  ),
+      // SafeArea prevents content from being hidden by notches or status bars
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: ConstrainedBox(
+                // This makes sure the content takes up at least the full height
+                // of the screen so that MainAxisAlignment.center still works.
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - 48, // Subtracting vertical padding
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: passwordStrengthColor == Colors.transparent
-                        ? primaryColor
-                        : passwordStrengthColor,
-                    width: 2.0,
-                  ),
-                ),
-              ),
-            ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'mapNmark',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 50),
 
-            // Show password strength bar if password is entered
-            if (_passwordController.text.isNotEmpty && _passwordError == null) ...[
-              const SizedBox(height: 8),
-              LinearProgressIndicator(
-                value: _passwordStrength,
-                backgroundColor: Colors.grey[300],
-                color: passwordStrengthColor,
-                minHeight: 5,
-              ),
-              // Show what's missing from password requirements
-              if (_passwordRequirements.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (var requirement in _passwordRequirements)
-                        Text(
-                          '• $requirement',
-                          style: Theme.of(context).textTheme.bodySmall,
+                    // Email input
+                    TextField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        border: const OutlineInputBorder(),
+                        errorText: _emailError,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Password input with strength indicator
+                    TextField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        border: const OutlineInputBorder(),
+                        errorText: _passwordError,
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: passwordStrengthColor == Colors.transparent
+                                ? borderColor
+                                : passwordStrengthColor,
+                            width: 1.0,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: passwordStrengthColor == Colors.transparent
+                                ? primaryColor
+                                : passwordStrengthColor,
+                            width: 2.0,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Show password strength bar
+                    if (_passwordController.text.isNotEmpty && _passwordError == null) ...[
+                      const SizedBox(height: 8),
+                      LinearProgressIndicator(
+                        value: _passwordStrength,
+                        backgroundColor: Colors.grey[300],
+                        color: passwordStrengthColor,
+                        minHeight: 5,
+                      ),
+                      if (_passwordRequirements.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (var requirement in _passwordRequirements)
+                                Text(
+                                  '• $requirement',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                            ],
+                          ),
                         ),
                     ],
-                  ),
+                    const SizedBox(height: 16),
+
+                    // Confirm password input
+                    TextField(
+                      controller: _confirmPasswordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'Confirm Password',
+                        border: const OutlineInputBorder(),
+                        errorText: _confirmPasswordError,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    TextField(
+                      controller: _nameController,
+                      textCapitalization: TextCapitalization.words,
+                      decoration: const InputDecoration(
+                        labelText: 'Full Name',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Role Selection
+                    DropdownButtonFormField<String>(
+                      value: _selectedRole,
+                      decoration: const InputDecoration(
+                        labelText: 'I am a...',
+                        border: OutlineInputBorder(),
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: 'student', child: Text('Student')),
+                        DropdownMenuItem(value: 'professor', child: Text('Professor')),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedRole = value!;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Sign up button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50, // Added fixed height for consistency
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _signUp,
+                        child: _isLoading
+                            ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                            : const Text('Sign Up'),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Go back to login button
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('Already have an account?'),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Sign In'),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-            ],
-            const SizedBox(height: 16),
-
-            // Confirm password input
-            TextField(
-              controller: _confirmPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Confirm Password',
-                border: const OutlineInputBorder(),
-                errorText: _confirmPasswordError,
               ),
-            ),
-            const SizedBox(height: 24),
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Full Name',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Role Selection
-            DropdownButtonFormField<String>(
-              value: _selectedRole,
-              decoration: const InputDecoration(
-                labelText: 'I am a...',
-                border: OutlineInputBorder(),
-              ),
-              items: const [
-                DropdownMenuItem(value: 'student', child: Text('Student')),
-                DropdownMenuItem(value: 'professor', child: Text('Professor')),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  _selectedRole = value!;
-                });
-              },
-            ),
-            const SizedBox(height: 24),
-            // Sign up button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _signUp,
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text('Sign Up'),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Go back to login button
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Already have an account?'),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Sign In'),
-                ),
-              ],
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
